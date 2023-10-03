@@ -7,16 +7,14 @@ class School {
 }
 
 class Direction {
-    #_name : string 
     levels : Level[] = []
 
     get name () : string {
-        return this.#_name
+        return this._name
     }
 
-    constructor (name : string) {
-        this.#_name = name ;
-    }
+    constructor (
+        private _name : string) {}
 
     addLevel (level : Level) : void {
         this.levels.push (level)
@@ -24,22 +22,19 @@ class Direction {
 }
 
 class Level {
-    #_name : string
-    #_program : string
     groups : Group[] = []
 
     get name () : string {
-        return this.#_name
+        return this._name
     }
 
     get program () : string {
-        return this.#_program
+        return this._program
     }
 
-    constructor (name : string , program : string) {
-        this.#_name = name
-        this.#_program = program
-    }
+    constructor (
+        private _name : string , 
+        private _program : string) {}
 
     addGroup (group : Group) : void {
         this.groups.push (group)
@@ -53,21 +48,18 @@ class ArrayOf <Type> extends Array <Type> {
     }
 }
 class Group {
-    #_students : ArrayOf <Student> = new ArrayOf
-    directionName : string
-    levelName : string
+    private _students : ArrayOf <Student> = new ArrayOf
 
     get students () : ArrayOf <Student> {
-        return this.#_students
+        return this._students
     }
 
-    constructor (directionName : string , levelName : string) {
-        this.directionName = directionName
-        this.levelName = levelName
-    }
+    constructor (
+        public directionName : string , 
+        public levelName : string) {}
 
     addStudent (student : Student) : void {
-        this.#_students.push (student)
+        this._students.push (student)
     }
 
     showPerformance () : ArrayOf <Student> {
@@ -83,10 +75,6 @@ interface IGrade {
     [subject : string] : number
 }
 class Student {
-    firstName : string
-    lastName : string
-    birthYear : number
-
     grades : IGrade = {}
     attendance : boolean[] = []
 
@@ -104,11 +92,10 @@ class Student {
         return new Date ().getFullYear () - this.birthYear
     }
 
-    constructor (firstName : string , lastName : string , birthYear : number) {
-        this.firstName = firstName
-        this.lastName = lastName
-        this.birthYear = birthYear
-    }
+    constructor (
+        public firstName : string , 
+        public lastName : string , 
+        public birthYear : number) {}
 
     setGrade (subject : string , grade : number) : void {
         this.grades [subject] = grade
