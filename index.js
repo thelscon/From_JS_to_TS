@@ -13,18 +13,6 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var _Direction__name, _Level__name, _Level__program, _Group__students;
 var School = /** @class */ (function () {
     function School() {
         this.directions = [];
@@ -35,14 +23,13 @@ var School = /** @class */ (function () {
     return School;
 }());
 var Direction = /** @class */ (function () {
-    function Direction(name) {
-        _Direction__name.set(this, void 0);
+    function Direction(_name) {
+        this._name = _name;
         this.levels = [];
-        __classPrivateFieldSet(this, _Direction__name, name, "f");
     }
     Object.defineProperty(Direction.prototype, "name", {
         get: function () {
-            return __classPrivateFieldGet(this, _Direction__name, "f");
+            return this._name;
         },
         enumerable: false,
         configurable: true
@@ -52,25 +39,22 @@ var Direction = /** @class */ (function () {
     };
     return Direction;
 }());
-_Direction__name = new WeakMap();
 var Level = /** @class */ (function () {
-    function Level(name, program) {
-        _Level__name.set(this, void 0);
-        _Level__program.set(this, void 0);
+    function Level(_name, _program) {
+        this._name = _name;
+        this._program = _program;
         this.groups = [];
-        __classPrivateFieldSet(this, _Level__name, name, "f");
-        __classPrivateFieldSet(this, _Level__program, program, "f");
     }
     Object.defineProperty(Level.prototype, "name", {
         get: function () {
-            return __classPrivateFieldGet(this, _Level__name, "f");
+            return this._name;
         },
         enumerable: false,
         configurable: true
     });
     Object.defineProperty(Level.prototype, "program", {
         get: function () {
-            return __classPrivateFieldGet(this, _Level__program, "f");
+            return this._program;
         },
         enumerable: false,
         configurable: true
@@ -80,32 +64,47 @@ var Level = /** @class */ (function () {
     };
     return Level;
 }());
-_Level__name = new WeakMap(), _Level__program = new WeakMap();
 var ArrayOf = /** @class */ (function (_super) {
     __extends(ArrayOf, _super);
-    function ArrayOf() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    function ArrayOf(value) {
+        var _this = this;
+        if (value) {
+            if (typeof value === 'number')
+                _this = _super.call(this, value) || this;
+            else
+                _this = _super.apply(this, value) || this;
+        }
+        else {
+            _this = _super.call(this) || this;
+        }
+        Object.defineProperty(_this, 'toSorted', {
+            writable: true,
+            enumerable: false
+        });
+        _this.toSorted = function (predicate) {
+            var returnArray = new ArrayOf;
+            returnArray.push.apply(returnArray, _this);
+            return returnArray.sort(predicate);
+        };
+        return _this;
     }
-    ArrayOf.prototype.toSorted = function (predicate) {
-        return this.sort(predicate);
-    };
     return ArrayOf;
 }(Array));
 var Group = /** @class */ (function () {
     function Group(directionName, levelName) {
-        _Group__students.set(this, new ArrayOf);
         this.directionName = directionName;
         this.levelName = levelName;
+        this._students = new ArrayOf;
     }
     Object.defineProperty(Group.prototype, "students", {
         get: function () {
-            return __classPrivateFieldGet(this, _Group__students, "f");
+            return this._students;
         },
         enumerable: false,
         configurable: true
     });
     Group.prototype.addStudent = function (student) {
-        __classPrivateFieldGet(this, _Group__students, "f").push(student);
+        this._students.push(student);
     };
     Group.prototype.showPerformance = function () {
         var sortedStudents = this.students.toSorted(function (a, b) { return b.getPerformanceRating() - a.getPerformanceRating(); });
@@ -113,14 +112,13 @@ var Group = /** @class */ (function () {
     };
     return Group;
 }());
-_Group__students = new WeakMap();
 var Student = /** @class */ (function () {
     function Student(firstName, lastName, birthYear) {
-        this.grades = {};
-        this.attendance = [];
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthYear = birthYear;
+        this.grades = {};
+        this.attendance = [];
     }
     Object.defineProperty(Student.prototype, "fullName", {
         get: function () {

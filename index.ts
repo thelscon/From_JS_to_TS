@@ -43,8 +43,28 @@ class Level {
 
 type predicateSortType <Type> = (a : Type , b : Type) => number
 class ArrayOf <Type> extends Array <Type> {
-    toSorted (predicate ?: predicateSortType <Type>) : ArrayOf <Type> {
-        return this.sort (predicate)
+    toSorted : (predicate ?: predicateSortType <Type>) => ArrayOf <Type>
+
+    constructor (value ?: number | Array <Type>) {
+        if (value) {
+            if ( typeof value === 'number' )
+                super (value) 
+            else
+                super (...value)
+        }
+        else {
+            super ()
+        }
+
+        Object.defineProperty (this, 'toSorted' , {
+            writable : true ,
+            enumerable : false
+        })
+        this.toSorted = (predicate ?: predicateSortType <Type>) : ArrayOf <Type> => {
+            const returnArray : ArrayOf <Type> = new ArrayOf
+            returnArray.push ( ...this )
+            return returnArray.sort (predicate)
+        }
     }
 }
 class Group {
@@ -106,16 +126,16 @@ class Student {
     }
 
     getPerformanceRating () : number {
-        const gradeValues = Object.values (this.grades)
+        const gradeValues : number[] = Object.values (this.grades)
 
         if (gradeValues.length === 0)
             return 0
 
-        const averageGrade = gradeValues.reduce (
+        const averageGrade : number = gradeValues.reduce (
             (sum , grade) => sum + grade , 0
         ) / gradeValues.length
 
-        const attendancePercentage = (
+        const attendancePercentage : number = (
             this.attendance.filter (
                 present => present
             ).length / this.attendance.length
